@@ -1,0 +1,1 @@
+C:\DEV_Play\Repos\genai-prompt-playground\Playground\playground.client\obj\Debug\playground.client.esproj.CoreCompileInputs.cache
