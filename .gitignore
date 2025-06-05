@@ -8,7 +8,6 @@ pnpm-debug.log*
 # .NET (C#)
 **/bin/
 **/obj/
-*.user
 *.suo
 *.userosscache
 *.sln.docstates
