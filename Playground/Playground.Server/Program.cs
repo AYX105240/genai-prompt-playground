@@ -9,8 +9,9 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
+// Remove serving static files and fallback to index.html
+// app.UseDefaultFiles();
+// app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -25,6 +26,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapFallbackToFile("/index.html");
+// Remove fallback to index.html
+// app.MapFallbackToFile("/index.html");
 
 app.Run();

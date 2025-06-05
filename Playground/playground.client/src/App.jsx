@@ -1,52 +1,28 @@
-import { useEffect, useState } from 'react';
+import WeatherForecast from './WeatherForecast';
+import Users from './Users';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 
 function App() {
-    const [forecasts, setForecasts] = useState();
-
-    useEffect(() => {
-        populateWeatherData();
-    }, []);
-
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
-
     return (
-        <div>
-            <h1 id="tableLabel">Test Project 123</h1>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
+        <Router>
+            <nav style={{ marginBottom: 20 }}>
+                <Link to="/" style={{ marginRight: 10 }}>Home</Link>
+                <Link to="/weather" style={{ marginRight: 10 }}>Weather Forecast</Link>
+                <Link to="/users">Users</Link>
+            </nav>
+            <Routes>
+                <Route path="/" element={
+                    <div>
+                        <h1>Welcome to the Playground App</h1>
+                        <p>Select a page above.</p>
+                    </div>
+                } />
+                <Route path="/weather" element={<WeatherForecast />} />
+                <Route path="/users" element={<Users />} />
+            </Routes>
+        </Router>
     );
-    
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        if (response.ok) {
-            const data = await response.json();
-            setForecasts(data);
-        }
-    }
 }
 
 export default App;
