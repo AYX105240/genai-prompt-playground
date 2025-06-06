@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from './apiConfig';
 
 function WeatherForecast() {
     const [forecasts, setForecasts] = useState();
     useEffect(() => {
-        fetch('http://localhost:7000/weatherforecast')
+        fetch(`${API_BASE_URL}/weatherforecast`)
             .then(res => res.json())
             .then(setForecasts);
     }, []);

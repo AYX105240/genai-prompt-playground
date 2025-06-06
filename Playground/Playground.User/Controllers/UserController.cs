@@ -1,36 +1,65 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using Playground.User.Data;
+using Playground.User.Data.DTOs;
+using Playground.User.Requests;
+using Playground.User.Responses;
+using Playground.User.Services;
+using Playground.User.Data.Repositories;
 
 namespace Playground.User.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UserController : ControllerBase
     {
-        private static readonly List<UserDto> Users = new List<UserDto>
+        private readonly IUserService _userService;
+        private readonly IConfiguration _config;
+        public UserController(IUserService userService, IConfiguration config)
         {
-            new UserDto { Id = 1, Name = "Alice" },
-            new UserDto { Id = 2, Name = "Bob" }
-        };
+            _userService = userService;
+            _config = config;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("signup")]
+        public IActionResult Signup([FromBody] SignupRequest request)
+        {
+            var result = _userService.Signup(request);
+            if (result == null)
+                return Conflict("Email already exists");
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginRequest request)
+        {
+            var response = _userService.Login(request, _config);
+            if (response == null)
+                return Unauthorized();
+            return Ok(response);
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<UserDto>> Get()
         {
-            return Ok(Users);
+            return Ok(_userService.GetAll());
         }
 
         [HttpPost]
         public ActionResult<UserDto> Post([FromBody] UserDto user)
         {
-            user.Id = Users.Count + 1;
-            Users.Add(user);
-            return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
+            var created = _userService.Add(user);
+            return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
-    }
-
-    public class UserDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
     }
 }
