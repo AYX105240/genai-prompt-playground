@@ -30,36 +30,40 @@ export default function Login({ onLogin }) {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div className="d-flex justify-content-center align-items-center">
       <form onSubmit={handleSubmit} className="w-100" style={{maxWidth: 400}}>
         <div className="card shadow border-0">
           <div className="card-body p-4">
             <h2 className="card-title mb-4 text-center">Login</h2>
             {error && <div className="alert alert-danger">{error}</div>}
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">Username</label>
-              <input
-                id="username"
-                type="text"
-                className="form-control"
-                placeholder="Username"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-                required
-                autoFocus
-              />
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="username" className="col-sm-4 col-form-label text-end">Username</label>
+              <div className="col-sm-8">
+                <input
+                  id="username"
+                  type="text"
+                  className="form-control"
+                  placeholder="Username"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                  required
+                  autoFocus
+                />
+              </div>
             </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password</label>
-              <input
-                id="password"
-                type="password"
-                className="form-control"
-                placeholder="Password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-              />
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="password" className="col-sm-4 col-form-label text-end">Password</label>
+              <div className="col-sm-8">
+                <input
+                  id="password"
+                  type="password"
+                  className="form-control"
+                  placeholder="Password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <button type="submit" className="btn btn-primary w-100">Login</button>
             <p className="mt-3 text-center mb-0">Don't have an account? <Link to="/signup">Sign Up</Link></p>

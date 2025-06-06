@@ -10,8 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fullcalendar/common": "^5.11.5",
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/react": "^6.1.17",
+    "@fullcalendar/rrule": "^6.1.17",
+    "@fullcalendar/timegrid": "^6.1.17",
+    "bootstrap": "^5.3.6",
+    "date-fns": "^4.1.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-big-calendar": "^1.19.2",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2",
+    "rrule": "^2.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

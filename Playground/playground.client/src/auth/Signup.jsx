@@ -64,72 +64,82 @@ export default function Signup({ onSignup }) {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div className="d-flex justify-content-center align-items-center">
       <form onSubmit={handleSubmit} className="w-100" style={{maxWidth: 400}}>
         <div className="card shadow border-0">
           <div className="card-body p-4">
             <h2 className="card-title mb-4 text-center">Sign Up</h2>
             {error && <div className="alert alert-danger">{error}</div>}
             {success && <div className="alert alert-success">Signup successful! You can now log in.</div>}
-            <div className="mb-3">
-              <label htmlFor="firstname" className="form-label">First Name</label>
-              <input
-                id="firstname"
-                type="text"
-                className="form-control"
-                placeholder="First Name"
-                value={firstname}
-                onChange={e => setFirstname(e.target.value)}
-                required
-              />
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="firstname" className="col-sm-4 col-form-label text-end">First Name</label>
+              <div className="col-sm-8">
+                <input
+                  id="firstname"
+                  type="text"
+                  className="form-control"
+                  placeholder="First Name"
+                  value={firstname}
+                  onChange={e => setFirstname(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-            <div className="mb-3">
-              <label htmlFor="lastname" className="form-label">Last Name</label>
-              <input
-                id="lastname"
-                type="text"
-                className="form-control"
-                placeholder="Last Name"
-                value={lastname}
-                onChange={e => setLastname(e.target.value)}
-                required
-              />
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="lastname" className="col-sm-4 col-form-label text-end">Last Name</label>
+              <div className="col-sm-8">
+                <input
+                  id="lastname"
+                  type="text"
+                  className="form-control"
+                  placeholder="Last Name"
+                  value={lastname}
+                  onChange={e => setLastname(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">Email</label>
-              <input
-                id="email"
-                type="email"
-                className="form-control"
-                placeholder="Email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-              />
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="email" className="col-sm-4 col-form-label text-end">Email</label>
+              <div className="col-sm-8">
+                <input
+                  id="email"
+                  type="email"
+                  className="form-control"
+                  placeholder="Email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password</label>
-              <input
-                id="password"
-                type="password"
-                className="form-control"
-                placeholder="Password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-              />
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="password" className="col-sm-4 col-form-label text-end">Password</label>
+              <div className="col-sm-8">
+                <input
+                  id="password"
+                  type="password"
+                  className="form-control"
+                  placeholder="Password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-            <div className="mb-3">
-              <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-              <input
-                id="confirmPassword"
-                type="password"
-                className="form-control"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={e => setConfirmPassword(e.target.value)}
-                required
-              />
+            <div className="mb-3 row align-items-center">
+              <label htmlFor="confirmPassword" className="col-sm-4 col-form-label text-end">Confirm Password</label>
+              <div className="col-sm-8">
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  className="form-control"
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <button type="submit" className="btn btn-primary w-100">Sign Up</button>
             <p className="mt-3 text-center mb-0">Already have an account? <Link to="/login">Login</Link></p>

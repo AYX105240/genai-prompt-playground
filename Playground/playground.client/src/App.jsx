@@ -7,6 +7,7 @@ import { isLoggedIn, logout } from './auth/auth';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useState } from 'react';
 import Home from './Home';
+import Schedules from './Schedules';
 import './App.css';
 
 function AppContent() {
@@ -20,34 +21,42 @@ function AppContent() {
     };
     return (
         <>
-            <nav style={{ marginBottom: 20 }} className="d-flex justify-content-between align-items-center">
-                <div>
-                    <Link to="/weather" style={{ marginRight: 10 }}>Weather Forecast</Link>
-                    <Link to="/users">Users</Link>
-                </div>
-                <div className="d-flex align-items-center gap-2">
+            <div className="col-sm-12">
+                <div className="float-lg-end" style={{ zIndex: 1050 }}>
                     {loggedIn && <MyProfile onLogout={handleLogout} />}
                 </div>
-            </nav>
-            <Routes>
-                <Route path="/" element={
-                    loggedIn ? (
-                        <Home />
-                    ) : (
-                        showLogin ? (
-                            <div>
-                                <Login onLogin={() => { setLoggedIn(true); setShowLogin(true); }} />
-                            </div>
+                <nav style={{ marginBottom: 20 }} className="d-flex justify-content-between align-items-center">
+                    <div>
+                        {loggedIn && (
+                            <>
+                                <Link to="/weather" style={{ marginRight: 10 }}>Weather Forecast</Link>
+                                <Link to="/users" style={{ marginRight: 10 }}>Users</Link>
+                                <Link to="/schedules">Schedules</Link>
+                            </>
+                        )}
+                    </div>
+                </nav>
+                <Routes>
+                    <Route path="/" element={
+                        loggedIn ? (
+                            <Home />
                         ) : (
-                            <Signup onSignup={() => setShowLogin(true)} />
+                            showLogin ? (
+                                <div>
+                                    <Login onLogin={() => { setLoggedIn(true); setShowLogin(true); }} />
+                                </div>
+                            ) : (
+                                <Signup onSignup={() => setShowLogin(true)} />
+                            )
                         )
-                    )
-                } />
-                <Route path="/weather" element={<WeatherForecast />} />
-                <Route path="/users" element={<Users />} />
-                <Route path="/login" element={<Login onLogin={() => { setLoggedIn(true); setShowLogin(true); }} />} />
-                <Route path="/signup" element={<Signup onSignup={() => setShowLogin(true)} />} />
-            </Routes>
+                    } />
+                    <Route path="/weather" element={<WeatherForecast />} />
+                    <Route path="/users" element={<Users />} />
+                    <Route path="/schedules" element={<Schedules />} />
+                    <Route path="/login" element={<Login onLogin={() => { setLoggedIn(true); setShowLogin(true); }} />} />
+                    <Route path="/signup" element={<Signup onSignup={() => setShowLogin(true)} />} />
+                </Routes>
+            </div>
         </>
     );
 }
