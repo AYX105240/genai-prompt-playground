@@ -1,0 +1,6 @@
+@Playground.WishList_HostAddress = http://localhost:5037
+
+GET {{Playground.WishList_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

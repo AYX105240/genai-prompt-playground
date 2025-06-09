@@ -1,19 +1,27 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// JWT Authentication configuration
+// Add EF Core
+builder.Services.AddDbContext<Playground.Catalog.Data.CatalogDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Dependency Injection for repositories and services
+builder.Services.AddScoped<Playground.Catalog.Data.Repositories.IProductRepository, Playground.Catalog.Data.Repositories.ProductRepository>();
+builder.Services.AddScoped<Playground.Catalog.Services.ProductService>();
+
+// Add Authentication/Authorization (JWT)
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SampleSuperSecretKey123!@#SampleSuperSecretKey123!@#";
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "SampleIssuer";
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -24,33 +32,17 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidateAudience = false,
+            ValidateAudience = true, // Set to true to validate audiences
+        ValidAudiences = new[] { "cart_api", "catalog_api", "wishlist_api" }, // List all valid audiences
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtIssuer,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
-    options.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context =>
-        {
-            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
-            return Task.CompletedTask;
-        },
-        OnTokenValidated = context =>
-        {
-            Console.WriteLine("Token validated successfully.");
-            Console.WriteLine("Received Token: " + context.Request.Headers["Authorization"]);
-            return Task.CompletedTask;
-        }
-    };
 });
-
+builder.Services.AddAuthorization();
+builder.Services.AddControllers(); // Added this line to resolve the missing services error
 var app = builder.Build();
-
-// Remove serving static files and fallback to index.html
-// app.UseDefaultFiles();
-// app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -65,8 +57,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-// Remove fallback to index.html
-// app.MapFallbackToFile("/index.html");
 
 app.Run();

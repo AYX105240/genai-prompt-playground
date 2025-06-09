@@ -8,6 +8,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useState } from 'react';
 import Home from './Home';
 import Schedules from './Schedules';
+import Cart from './cart/Cart';
+import WishList from './wishlist/WishList';
+import Catalog from './catalog/Catalog';
 import './App.css';
 
 function AppContent() {
@@ -31,7 +34,10 @@ function AppContent() {
                             <>
                                 <Link to="/weather" style={{ marginRight: 10 }}>Weather Forecast</Link>
                                 <Link to="/users" style={{ marginRight: 10 }}>Users</Link>
-                                <Link to="/schedules">Schedules</Link>
+                                <Link to="/schedules" style={{ marginRight: 10 }}>Schedules</Link>
+                                <Link to="/cart" style={{ marginRight: 10 }}>Cart</Link>
+                                <Link to="/wishlist" style={{ marginRight: 10 }}>WishList</Link>
+                                <Link to="/catalog">Catalog</Link>
                             </>
                         )}
                     </div>
@@ -53,6 +59,9 @@ function AppContent() {
                     <Route path="/weather" element={<WeatherForecast />} />
                     <Route path="/users" element={<Users />} />
                     <Route path="/schedules" element={<Schedules />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/wishlist" element={<WishList />} />
+                    <Route path="/catalog" element={<Catalog />} />
                     <Route path="/login" element={<Login onLogin={() => { setLoggedIn(true); setShowLogin(true); }} />} />
                     <Route path="/signup" element={<Signup onSignup={() => setShowLogin(true)} />} />
                 </Routes>

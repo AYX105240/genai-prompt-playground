@@ -1,0 +1,6 @@
+@Playground.Cart_HostAddress = http://localhost:5234
+
+GET {{Playground.Cart_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

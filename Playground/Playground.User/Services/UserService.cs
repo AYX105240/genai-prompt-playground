@@ -56,18 +56,40 @@ namespace Playground.User.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, "Admin")
             };
+
             var jwtKey = config["Jwt:Key"] ?? "SampleSuperSecretKey123!@#";
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
-                issuer: config["Jwt:Issuer"] ?? "SampleIssuer",
-                audience: null,
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds
-            );
+
+            var audiences = new[] { "cart_api", "catalog_api", "wishlist_api" };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+        new Claim(ClaimTypes.Name, user.Name),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Role, "Admin")
+    }),
+                Issuer = config["Jwt:Issuer"] ?? "SampleIssuer",
+                Audience = null, // <-- Set to null when using multiple audiences in payload
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = creds,
+                Claims = new Dictionary<string, object>
+    {
+        { "aud", audiences } // 👈 Correct way to include multiple audiences
+    }
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            Console.WriteLine("Generated Token: " + tokenString); // Logging the generated token
+
             return new LoginResponse
             {
                 User = new UserInfo
