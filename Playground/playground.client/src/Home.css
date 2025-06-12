@@ -1,0 +1,84 @@
+/* Hero Section */
+.hero-section {
+    background: url('/images/hero-banner.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 50px 20px;
+    text-align: center;
+    color: white;
+}
+
+.hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* Categories Section */
+.categories-section {
+    padding: 20px;
+    text-align: center;
+}
+
+.categories-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.category-card {
+    text-align: center;
+    width: 200px;
+}
+
+.category-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* Featured Products Section */
+.featured-products-section {
+    padding: 20px;
+}
+
+.products-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.product-card {
+    text-align: center;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.product-card img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* Footer */
+.footer {
+    background: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer-links a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.social-media a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}

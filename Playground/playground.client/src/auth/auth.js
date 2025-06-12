@@ -12,5 +12,9 @@ export function isLoggedIn() {
 }
 
 export function logout() {
-  localStorage.removeItem('jwt');
+  localStorage.clear();
+}
+
+export function getUser() {
+  return JSON.parse(localStorage.getItem('user')) || null;
 }

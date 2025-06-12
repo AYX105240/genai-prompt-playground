@@ -23,7 +23,10 @@ export default function Login({ onLogin }) {
       localStorage.setItem('jwt', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       if (onLogin) onLogin(data.user);
-      navigate('/');
+
+      const params = new URLSearchParams(window.location.search);
+      const returnUrl = params.get('returnUrl');
+      navigate(returnUrl || '/');
     } catch (err) {
       setError(err.message);
     }

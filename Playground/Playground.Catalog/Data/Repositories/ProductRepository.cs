@@ -21,7 +21,9 @@ namespace Playground.Catalog.Data.Repositories
                 Id = dto.Id,
                 Name = dto.Name,
                 Price = dto.Price,
-                Description = dto.Description
+                Description = dto.Description,
+                Category = dto.Category,
+                ImageUrl = dto.ImageUrl
             };
         }
 
@@ -32,7 +34,9 @@ namespace Playground.Catalog.Data.Repositories
                 Id = entity.Id,
                 Name = entity.Name,
                 Price = entity.Price,
-                Description = entity.Description
+                Description = entity.Description,
+                Category = entity.Category,
+                ImageUrl = entity.ImageUrl
             };
         }
 

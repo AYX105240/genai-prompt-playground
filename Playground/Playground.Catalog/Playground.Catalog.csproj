@@ -22,4 +22,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Playground.WishList\Playground.WishList.csproj" />
+  </ItemGroup>
+
 </Project>

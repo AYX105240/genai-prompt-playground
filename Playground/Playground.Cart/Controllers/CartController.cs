@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using Playground.Cart.Data;
+using Playground.Cart.Services;
 using Playground.Cart.Data.DTOs;
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Playground.Cart.Controllers
 {
@@ -12,38 +11,49 @@ namespace Playground.Cart.Controllers
     [Route("api/[controller]")]
     public class CartController : ControllerBase
     {
-        private readonly CartDbContext _db;
-        public CartController(CartDbContext db)
+        private readonly ICartService _service;
+        public CartController(ICartService service)
         {
-            _db = db;
+            _service = service;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CartItemDto>> Get()
+        public async Task<ActionResult<IEnumerable<CartItemDto>>> Get()
         {
-            var userId = User.FindFirst(ClaimTypes.Name)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
-            return Ok(_db.CartItems.Where(item => item.UserId == userId).ToList());
+            var items = await _service.GetCartItemsAsync(userId);
+            return Ok(items);
         }
 
         [HttpPost]
-        public ActionResult<CartItemDto> Add([FromBody] CartItemDto item)
+        public async Task<ActionResult<CartItemDto>> Add([FromBody] CartItemDto item)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
             item.UserId = userId;
-            _db.CartItems.Add(item);
-            _db.SaveChanges();
-            return CreatedAtAction(nameof(Get), item);
+            var addedItem = await _service.AddCartItemAsync(item);
+            return CreatedAtAction(nameof(Get), new { id = addedItem.Id }, addedItem);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Remove(int id)
+        public async Task<IActionResult> Remove(int id)
         {
-            var entity = _db.CartItems.Find(id);
-            if (entity == null) return NotFound();
-            _db.CartItems.Remove(entity);
-            _db.SaveChanges();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+            var success = await _service.RemoveCartItemAsync(id, userId);
+            if (!success) return NotFound();
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CartItemDto item)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+            item.UserId = userId;
+            var success = await _service.UpdateCartItemAsync(id, item);
+            if (!success) return NotFound();
             return NoContent();
         }
     }

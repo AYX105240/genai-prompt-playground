@@ -23,10 +23,14 @@ namespace Playground.User.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _repo;
-        public UserService(IUserRepository repo)
+        private readonly IConfiguration _config;
+
+        public UserService(IUserRepository repo, IConfiguration config)
         {
             _repo = repo;
+            _config = config;
         }
+
         private static string HashPassword(string password)
         {
             if (string.IsNullOrEmpty(password)) return string.Empty;
@@ -34,6 +38,7 @@ namespace Playground.User.Services
             var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password.Trim()));
             return Convert.ToBase64String(bytes);
         }
+
         public object Signup(SignupRequest request)
         {
             if (_repo.EmailExists(request.Email))
@@ -45,19 +50,41 @@ namespace Playground.User.Services
                 Email = request.Email,
                 PasswordHash = HashPassword(request.Password)
             };
+
+            // Read SuperAdminEmail from configuration
+            var superAdminEmail = _config["SuperAdminEmail"] ?? "superadmin@example.com";
+
+            // Check if the email matches SuperAdminEmail and set the role to 'Admin'
+            if (user.Email.Equals(superAdminEmail, StringComparison.OrdinalIgnoreCase))
+            {
+                user.Role = "Admin";
+            }
+
             _repo.Add(user);
             _repo.Save();
-            return new { user.Id, user.FirstName, user.LastName, user.Email };
+            return new { user.Id, user.FirstName, user.LastName, user.Email, user.Role };
         }
+
         public LoginResponse? Login(LoginRequest request, IConfiguration config)
         {
             var user = _repo.GetByEmailAndPasswordHash(request.Username, HashPassword(request.Password));
             if (user == null) return null;
+
+            // Read SuperAdminEmail from configuration
+            var superAdminEmail = _config["SuperAdminEmail"] ?? "superadmin@example.com";
+
+            // Check if the email matches SuperAdminEmail and set the role to 'Admin'
+            if (user.Email.Equals(superAdminEmail, StringComparison.OrdinalIgnoreCase))
+            {
+                user.Role = "Admin";
+            }
+
+            // Include the role in the claims
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, "Admin")
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             var jwtKey = config["Jwt:Key"] ?? "SampleSuperSecretKey123!@#";
@@ -90,6 +117,7 @@ namespace Playground.User.Services
 
             Console.WriteLine("Generated Token: " + tokenString); // Logging the generated token
 
+            // Include the role in the LoginResponse
             return new LoginResponse
             {
                 User = new UserInfo
@@ -97,11 +125,13 @@ namespace Playground.User.Services
                     Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    Email = user.Email
+                    Email = user.Email,
+                    Role = user.Role
                 },
                 Token = new JwtSecurityTokenHandler().WriteToken(token)
             };
         }
+
         public IEnumerable<UserDto> GetAll() => _repo.GetAll();
         public UserDto Add(UserDto user)
         {

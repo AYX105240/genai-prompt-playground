@@ -8,5 +8,6 @@ namespace Playground.User.Data.DTOs
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string Name => $"{FirstName} {LastName}";
+        public string Role { get; set; } = "Viewer";
     }
 }

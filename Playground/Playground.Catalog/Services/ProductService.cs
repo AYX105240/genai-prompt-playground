@@ -6,15 +6,19 @@ using Playground.Catalog.Responses;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Playground.WishList.Services;
 
 namespace Playground.Catalog.Services
 {
     public class ProductService
     {
         private readonly IProductRepository _repository;
-        public ProductService(IProductRepository repository)
+        private readonly IRabbitMQService _rabbitMQService;
+
+        public ProductService(IProductRepository repository, IRabbitMQService rabbitMQService)
         {
             _repository = repository;
+            _rabbitMQService = rabbitMQService;
         }
 
         public async Task<IEnumerable<ProductResponse>> GetAllAsync()
@@ -72,6 +76,16 @@ namespace Playground.Catalog.Services
                 Category = request.Category
             };
             await _repository.UpdateAsync(product);
+
+            // Publish product update event
+            var productUpdateEvent = new ProductUpdateEvent
+            {
+                ProductId = product.Id,
+                Name = product.Name,
+                ImageUrl = product.ImageUrl,
+                Price = product.Price
+            };
+            _rabbitMQService.PublishProductUpdate(productUpdateEvent);
         }
 
         public async Task DeleteAsync(int id)

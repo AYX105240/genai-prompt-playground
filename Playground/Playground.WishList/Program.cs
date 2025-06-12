@@ -1,4 +1,6 @@
 using Playground.WishList.Data;
+using Playground.WishList.Data.Repositories;
+using Playground.WishList.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -57,6 +59,22 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
+
+// Enable CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+builder.Services.AddScoped<IWishListRepository, WishListRepository>();
+builder.Services.AddScoped<IWishListService, WishListService>();
+builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -68,6 +86,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(); // Enable CORS middleware
 app.MapControllers();
 
 
